@@ -1061,7 +1061,7 @@ const firebaseConfig={
 };
 const fbApp=initializeApp(firebaseConfig);
 const auth=getAuth(fbApp);
-const db=getFirestore(fbApp);
+const db=getFirestore(fbApp,'(default)');
 
 /* ─── CONSTANTS ───────────────────────────────── */
 const PALETTE=[
