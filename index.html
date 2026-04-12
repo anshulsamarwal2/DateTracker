@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1040,8 +1041,6 @@ body{
 </div><!-- end #appShell -->
 
 <div class="toast" id="toast"></div>
-
-
 <script type="module">
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import{getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
@@ -1135,9 +1134,13 @@ function setSyncDot(state){
 
 async function loadUserData(uid){
   try{
+    console.log('[DateTracker] Loading data for uid:', uid);
     const snap=await getDoc(userDoc(uid));
+    console.log('[DateTracker] snap.exists():', snap.exists());
     if(snap.exists()){
       data=snap.data();
+      if(!Array.isArray(data.entries))data.entries=[];
+      if(!Array.isArray(data.categories))data.categories=defaultData().categories;
       data.entries.forEach(e=>{
         if(e.archived===undefined)e.archived=false;
         if(e.pinned===undefined)e.pinned=false;
@@ -1146,13 +1149,21 @@ async function loadUserData(uid){
       data.categories.forEach(c=>{if(c.otd===undefined)c.otd=true;});
       if(!data.lastBackup)data.lastBackup=null;
       if(!data.lastBackupReminder)data.lastBackupReminder=null;
+      console.log('[DateTracker] Loaded', data.entries.length, 'entries,', data.categories.length, 'categories');
     } else {
-      // Document doesn't exist yet — load defaults locally only.
-      // Do NOT write to Firestore here, in case this is a temporary
-      // read failure or wrong database path. User can reset manually.
+      // Document not found — use defaults in memory only, do NOT write to Firestore.
+      // This prevents wiping real data if there's a permissions issue or wrong DB path.
+      console.warn('[DateTracker] Document not found in Firestore. Using local defaults. Check Firestore rules and database path.');
       data=defaultData();
+      setSyncDot('error');
+      toast('⚠️ Could not load your data — check console for details');
     }
-  }catch(e){console.error(e);setSyncDot('error');}
+  }catch(e){
+    console.error('[DateTracker] Firestore read error:', e.code, e.message);
+    setSyncDot('error');
+    data=defaultData();
+    toast('⚠️ Sync error: '+e.message);
+  }
 }
 
 function save(){
@@ -1164,8 +1175,9 @@ function save(){
       await setDoc(userDoc(currentUser.uid),data);
       setSyncDot('synced');
     }catch(e){
-      console.error(e);setSyncDot('error');
-      toast('⚠️ Sync failed — check connection');
+      console.error('[DateTracker] Save error:', e.code, e.message);
+      setSyncDot('error');
+      toast('⚠️ Save failed: '+e.message);
     }
   },600);
 }
