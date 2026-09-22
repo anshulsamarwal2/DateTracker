@@ -1,0 +1,55 @@
+/* ---------- Boot: landing, loading, error ---------- */
+.logo-mark { width: 64px; height: 64px; }
+
+.landing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 420px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: calc(var(--sp-12) + env(safe-area-inset-top)) var(--sp-6) calc(var(--sp-8) + env(safe-area-inset-bottom));
+  text-align: center;
+}
+.landing-title { margin-top: var(--sp-5); font-size: var(--fs-5); }
+.landing-tagline { margin-top: var(--sp-2); font-size: var(--fs-4); color: var(--text-2); }
+.landing-features { display: grid; gap: var(--sp-4); width: 100%; margin: var(--sp-12) 0; text-align: left; }
+.landing-features li { display: flex; align-items: center; gap: var(--sp-4); color: var(--text-2); }
+.landing-features .icon { color: var(--accent); width: 24px; height: 24px; }
+.landing-cta { margin-top: auto; }
+.landing-offline { display: flex; align-items: center; gap: var(--sp-2); margin-top: auto; color: var(--text-2); }
+.landing-error { margin-top: var(--sp-3); }
+.landing-foot { margin-top: var(--sp-6); font-size: var(--fs-2); color: var(--text-3); }
+
+.boot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-4);
+  min-height: 100dvh;
+  padding: var(--sp-6);
+  text-align: center;
+}
+.boot-title { font-size: var(--fs-4); font-weight: var(--fw-semibold); }
+.boot-message { max-width: 360px; color: var(--text-2); }
+.boot-alert { width: 32px; height: 32px; color: var(--danger); }
+
+/* ---------- App frame ---------- */
+#screen:focus { outline: none; }
+#screen.is-entering { animation: screen-in var(--dur-push) var(--ease-out); }
+@keyframes screen-in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+
+.banner {
+  position: fixed;
+  top: calc(env(safe-area-inset-top) + var(--topbar-h) + var(--sp-1));
+  left: 0;
+  right: 0;
+  z-index: 15;
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-2);
+  padding: 0 var(--gutter);
+  pointer-events: none;
+}
+.banner .pill { pointer-events: auto; }
