@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DateTracker — style guide</title>
+  <link rel="stylesheet" href="../styles/tokens.css">
+  <link rel="stylesheet" href="../styles/base.css">
+  <link rel="stylesheet" href="../styles/components.css">
+  <style>.sg { padding: 16px; display: grid; gap: 16px; } .sg-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }</style>
+</head>
+<body>
+  <div id="sprite"></div>
+  <div class="screen">
+    <header class="topbar">
+      <span class="topbar-title">Style guide</span>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="theme" aria-label="Toggle theme"><svg class="icon"><use href="#i-sun"></use></svg></button>
+        <a class="icon-btn" href="#" aria-label="Reminders"><svg class="icon"><use href="#i-bell"></use></svg><span class="badge">3</span></a>
+      </div>
+    </header>
+    <div class="sg">
+      <p class="label">Buttons</p>
+      <div class="sg-row">
+        <button class="btn btn-primary">Save</button>
+        <button class="btn btn-secondary">Cancel</button>
+        <button class="btn btn-quiet">Quiet</button>
+        <button class="btn btn-danger">Delete</button>
+        <button class="btn btn-primary" disabled>Disabled</button>
+      </div>
+      <p class="label">Chips &amp; segmented</p>
+      <div class="chips">
+        <button class="chip" aria-pressed="true">All</button>
+        <button class="chip" aria-pressed="false"><svg class="icon icon-sm"><use href="#i-star"></use></svg>Starred</button>
+        <button class="chip" aria-pressed="false" style="--c:#4A8FD4"><span class="dot"></span>Travel</button>
+        <button class="chip" aria-pressed="false" style="--c:#5BA85A"><span class="dot"></span>Health</button>
+      </div>
+      <div class="segmented"><button aria-pressed="true">Once</button><button aria-pressed="false">Every year</button></div>
+      <p class="label">Fields</p>
+      <label class="field"><span class="field-label">Title</span><input class="input" placeholder="What happened?"></label>
+      <label class="field"><span class="field-label">Date</span><input class="input" type="date" aria-invalid="true"><span class="field-error">Pick a valid date.</span></label>
+      <label class="switch-row"><span>Star this memory</span><input type="checkbox" role="switch" checked></label>
+      <p class="label">Card</p>
+    </div>
+    <section class="card">
+      <div class="card-head"><h2 class="label">On this day · 22 September</h2></div>
+      <a class="card-row" href="#"><span class="card-row-main">2023 · Trip to Jaipur · Travel</span><span class="card-row-aside">3 years ago</span></a>
+      <a class="card-row" href="#"><span class="card-row-main">2019 · First day at the new job</span><span class="card-row-aside">7 years ago</span></a>
+    </section>
+    <h2 class="label list-title">List</h2>
+    <div class="list">
+      <a class="list-row" href="#"><div class="list-row-main"><div class="list-row-title">Appearance</div><div class="list-row-meta">System · Copper</div></div><svg class="icon"><use href="#i-chevron-right"></use></svg></a>
+      <a class="list-row" href="#"><div class="list-row-main"><div class="list-row-title">Categories</div><div class="list-row-meta">4 categories</div></div><svg class="icon"><use href="#i-chevron-right"></use></svg></a>
+    </div>
+    <div class="empty"><h2>Your journal is empty.</h2><p>Tap + to record your first memory — a trip, a purchase, a milestone. Anything worth remembering.</p></div>
+    <div class="sg"><div class="spinner"></div></div>
+  </div>
+  <div class="toasts"><div class="toast is-visible"><span class="toast-text">Moved to Trash</span><button class="toast-action">Undo</button></div></div>
+  <button class="fab" aria-label="Add a memory"><svg class="icon"><use href="#i-plus"></use></svg></button>
+  <script type="module">
+    document.getElementById('sprite').innerHTML = await (await fetch('../assets/icons/sprite.svg')).text();
+    document.getElementById('theme').addEventListener('click', () => {
+      const r = document.documentElement;
+      r.dataset.theme = r.dataset.theme === 'dark' ? 'light' : 'dark';
+    });
+  </script>
+</body>
+</html>
