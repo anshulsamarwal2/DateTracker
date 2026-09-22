@@ -53,15 +53,21 @@ export function mount(root) {
     },
     empty: async () => {
       const s = store.get();
-      const ids = trashedEntries(s.entries).map((e) => e.id);
-      if (!ids.length || !s.user) return;
+      const countAtOpen = trashedEntries(s.entries).length;
+      if (!countAtOpen || !s.user) return;
       const ok = await confirmSheet({
         title: 'Empty trash?',
-        message: `${memories(ids.length)} will be deleted forever. This can't be undone.`,
+        message: `${memories(countAtOpen)} will be deleted forever. This can't be undone.`,
         confirmLabel: 'Delete forever',
         danger: true,
       });
-      if (ok) guard(emptyTrash(s.user.uid, ids));
+      if (!ok) return;
+      // Recompute after the sheet closes: entries may have been restored,
+      // deleted or added to the trash while it was open.
+      const fresh = store.get();
+      const ids = trashedEntries(fresh.entries).map((e) => e.id);
+      if (!ids.length || !fresh.user) return;
+      guard(emptyTrash(fresh.user.uid, ids));
     },
   });
   const unsub = store.subscribe(render);

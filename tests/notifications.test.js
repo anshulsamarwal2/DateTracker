@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { pruneFiredKeys, notificationPermission, NOTIFY_EXPLAINER } from '../src/notifications.js';
+import { describe, it, expect, vi, afterEach } from 'vitest';
+import { pruneFiredKeys, notificationPermission, NOTIFY_EXPLAINER, showReminderNotification } from '../src/notifications.js';
 
 const DAY = 86400000;
 const fakeStorage = (entries) => {
@@ -36,5 +36,25 @@ describe('permission & copy', () => {
   });
   it('explains the limitation in two sentences', () => {
     expect(NOTIFY_EXPLAINER.split('. ').length).toBe(2);
+  });
+});
+
+describe('showReminderNotification', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('defaults to the entry link, but accepts a url override for entries that have none', async () => {
+    const calls = [];
+    class FakeNotification {
+      static permission = 'granted';
+      constructor(title, options) { calls.push({ title, options }); }
+    }
+    vi.stubGlobal('Notification', FakeNotification);
+    vi.stubGlobal('navigator', {});
+
+    await showReminderNotification({ id: 'e1', title: 'Car insurance', reminder: null });
+    expect(calls[0].options.data.url).toBe('./#/entry/e1');
+
+    await showReminderNotification({ id: 'test', title: 'DateTracker', reminder: null }, './#/reminders');
+    expect(calls[1].options.data.url).toBe('./#/reminders');
   });
 });

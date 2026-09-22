@@ -52,14 +52,14 @@ export function pruneFiredKeys(storage = globalThis.localStorage, now = Date.now
   }
 }
 
-/** @param {Entry} entry */
-export async function showReminderNotification(entry) {
+/** @param {Entry} entry @param {string} [url] link to open on click; defaults to the entry's own detail page */
+export async function showReminderNotification(entry, url = `./#/entry/${encodeURIComponent(entry.id)}`) {
   if (notificationPermission() !== 'granted') return;
   const options = {
     body: scheduleLabel(entry) || 'Reminder',
     tag: `dt-${entry.id}`,
     icon: './assets/icons/icon-192.png',
-    data: { url: `./#/entry/${encodeURIComponent(entry.id)}` },
+    data: { url },
   };
   try {
     const reg = await navigator.serviceWorker?.getRegistration();

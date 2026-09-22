@@ -47,6 +47,7 @@ function rows(items, cats, now) {
 /** @param {HTMLElement} root */
 export function mount(root) {
   let last = '';
+  let alive = true;
   function render() {
     const s = store.get();
     const now = new Date();
@@ -69,9 +70,9 @@ export function mount(root) {
   }
   const off = delegate(root, 'click', {
     back: () => back('#/'),
-    'enable-notifications': async () => { await requestNotifications(); last = ''; render(); },
+    'enable-notifications': async () => { await requestNotifications(); if (!alive) return; last = ''; render(); },
   });
   const unsub = store.subscribe(render);
   render();
-  return { unmount() { unsub(); off(); } };
+  return { unmount() { alive = false; unsub(); off(); } };
 }

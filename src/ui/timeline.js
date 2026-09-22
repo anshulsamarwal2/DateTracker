@@ -105,7 +105,7 @@ function searchHeader() {
 function filterStrip(categories, ui) {
   return html`
     <div class="filters">
-      <div class="chips" role="toolbar" aria-label="Filter memories">
+      <div class="chips" role="group" aria-label="Filter memories">
         <button type="button" class="chip" data-action="filter-all" aria-pressed="${String(ui.categoryId === 'all' && !ui.starredOnly)}">All</button>
         <button type="button" class="chip" data-action="filter-star" aria-pressed="${String(ui.starredOnly)}">${icon('star', { cls: 'icon-sm' })}Starred</button>
         ${categories.map((c) => html`<button type="button" class="chip" data-action="filter-cat" data-id="${c.id}"

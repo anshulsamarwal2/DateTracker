@@ -232,6 +232,7 @@
   background: var(--surface-2);
 }
 .segmented button {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
@@ -242,6 +243,8 @@
   font-size: var(--fs-2);
   font-weight: var(--fw-medium);
 }
+/* Keep the 38 px visual but give a 44 px hit area. */
+.segmented button::before { content: ''; position: absolute; inset: -3px 0; }
 .segmented button[aria-pressed="true"] { background: var(--surface-1); color: var(--text-1); box-shadow: 0 1px 2px rgb(0 0 0 / 0.2); }
 
 /* ---------- Cards & lists ---------- */

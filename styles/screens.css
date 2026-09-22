@@ -254,6 +254,8 @@
 .add-cat { display: grid; gap: var(--sp-2); }
 .swatches.small { gap: var(--sp-2); }
 .swatches.small .swatch { width: 36px; height: 36px; }
+/* Keep the 36 px visual but give a 44 px hit area. */
+.swatches.small .swatch::before { content: ''; position: absolute; inset: -4px; }
 .radio-list { display: grid; margin-top: var(--sp-3); }
 .radio-row { display: flex; align-items: center; gap: var(--sp-3); min-height: var(--tap); cursor: pointer; }
 .radio-row input { width: 20px; height: 20px; margin: 0; accent-color: var(--accent); }

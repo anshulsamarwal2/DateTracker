@@ -137,7 +137,9 @@ function mountAppearance(root) {
 
 /** @param {HTMLElement} root */
 function mountNotifications(root) {
+  let alive = true;
   function render() {
+    if (!alive) return;
     setHTML(root, sectionScreen('Notifications', html`
       <div class="content">
         ${notificationStatusBlock()}
@@ -150,10 +152,10 @@ function mountNotifications(root) {
   const off = delegate(root, 'click', {
     back: () => back('#/settings'),
     'enable-notifications': async () => { await requestNotifications(); render(); },
-    test: () => showReminderNotification(/** @type {any} */ ({ id: 'test', title: 'DateTracker', reminder: null })),
+    test: () => showReminderNotification(/** @type {any} */ ({ id: 'test', title: 'DateTracker', reminder: null }), './#/reminders'),
   });
   render();
-  return { unmount: off };
+  return { unmount() { alive = false; off(); } };
 }
 
 /* ---------- About ---------- */
