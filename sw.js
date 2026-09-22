@@ -56,7 +56,9 @@ const SHELL = [
 ];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(SHELL)));
+  // Bypass the HTTP cache (GitHub Pages sends max-age=600) so a fresh deploy
+  // never precaches a stale mix of old and new modules.
+  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(SHELL.map((u) => new Request(u, { cache: 'reload' })))));
 });
 
 self.addEventListener('message', (event) => {
