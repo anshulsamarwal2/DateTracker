@@ -192,3 +192,19 @@
 .reminder-line { display: flex; align-items: center; gap: var(--sp-3); color: var(--text-2); }
 .reminder-line .icon { color: var(--text-3); }
 .detail-actions { display: flex; align-items: center; gap: var(--sp-3); margin-top: var(--sp-8); }
+
+/* ---------- Reminders ---------- */
+.notif-status { display: grid; gap: var(--sp-2); padding: var(--sp-2) 0 var(--sp-2); }
+.notif-line { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
+.notif-line > span { flex: 1; min-width: 160px; }
+.notif-line .icon { color: var(--text-3); }
+.when-chip {
+  flex: none;
+  width: 108px;
+  padding: 2px var(--sp-2);
+  border-radius: var(--r-input);
+  background: var(--accent-soft);
+  font-size: var(--fs-2);
+  font-weight: var(--fw-medium);
+  text-align: center;
+}

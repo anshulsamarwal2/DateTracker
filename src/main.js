@@ -8,6 +8,7 @@ import { watchAuth, completeRedirect } from './firebase.js';
 import { ensureFirstRun, subscribeEntries, subscribeCategories, subscribeMeta } from './db.js';
 import { startApp } from './ui/app.js';
 import { toast } from './ui/toast.js';
+import { startReminderScheduler } from './notifications.js';
 
 history.scrollRestoration = 'manual';
 initTheme();
@@ -59,7 +60,10 @@ async function startSession(fbUser) {
   let pendingCategories = false;
   const sync = () => (pendingEntries || pendingCategories ? 'pending' : 'clean');
   const maybeReady = () => {
-    if (gotEntries && gotCategories && store.get().status === 'loading') store.set({ status: 'ready' });
+    if (gotEntries && gotCategories && store.get().status === 'loading') {
+      store.set({ status: 'ready' });
+      unsubs.push(startReminderScheduler());
+    }
   };
   /** @param {unknown} err */
   const onError = (err) => {
