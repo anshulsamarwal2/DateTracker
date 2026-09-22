@@ -141,7 +141,11 @@ export function toICS(entry, category = null, now = new Date()) {
   ];
   const desc = [entry.notes, category ? `Category: ${category.name}` : ''].filter(Boolean).join('\n');
   if (desc) lines.push(`DESCRIPTION:${icsEscape(desc)}`);
-  if (r.kind === 'yearly') lines.push('RRULE:FREQ=YEARLY');
+  if (r.kind === 'yearly') {
+    // A Feb 29 anniversary needs the last day of February, not a fixed day-of-month
+    // (matches the in-app Feb 28 fallback in non-leap years, dates.js#anniversaryOn).
+    lines.push(/^\d{4}-02-29$/.test(entry.date) ? 'RRULE:FREQ=YEARLY;BYMONTH=2;BYMONTHDAY=-1' : 'RRULE:FREQ=YEARLY');
+  }
   lines.push('BEGIN:VALARM', 'TRIGGER:-PT0M', 'ACTION:DISPLAY', `DESCRIPTION:${icsEscape(entry.title)}`, 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR');
   return lines.map(icsFold).join('\r\n') + '\r\n';
 }

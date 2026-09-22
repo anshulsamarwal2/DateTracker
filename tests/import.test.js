@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { CSV_FIELDS, guessMapping, normaliseDate, csvRowsToEntries, parseJSONExport, planMerge } from '../src/io/import.js';
-import { PALETTE } from '../src/model.js';
+import { PALETTE, LIMITS } from '../src/model.js';
 
 describe('guessMapping', () => {
   it('maps common headers and skips the rest, one column per field', () => {
@@ -78,6 +78,36 @@ describe('parseJSONExport', () => {
     expect(() => parseJSONExport('{')).toThrow('That file is not valid JSON.');
     expect(() => parseJSONExport('{"entries":[]}')).toThrow('That file is not a DateTracker export.');
     expect(() => parseJSONExport('{"version":1,"entries":[],"categories":[]}')).toThrow('That file is not a DateTracker export.');
+  });
+});
+
+describe('parseJSONExport id sanitising and clamping', () => {
+  it('replaces unsafe ids, remaps categoryId to the replaced category id, and clamps oversized text', () => {
+    const text = JSON.stringify({
+      version: 2,
+      categories: [{ id: 'cat/1', name: 'X'.repeat(80), color: '#123456' }],
+      entries: [{ id: 'e"1', title: 'T'.repeat(400), date: '2026-01-01', notes: 'N'.repeat(6000), categoryId: 'cat/1' }],
+    });
+    const r = parseJSONExport(text);
+    expect(r.categories[0].id).not.toBe('cat/1');
+    expect(r.categories[0].id).toMatch(/^[A-Za-z0-9_-]{1,128}$/);
+    expect(r.categories[0].name).toHaveLength(LIMITS.categoryName);
+    expect(r.entries[0].id).not.toBe('e"1');
+    expect(r.entries[0].id).toMatch(/^[A-Za-z0-9_-]{1,128}$/);
+    expect(r.entries[0].categoryId).toBe(r.categories[0].id);
+    expect(r.entries[0].title).toHaveLength(LIMITS.title);
+    expect(r.entries[0].notes).toHaveLength(LIMITS.notes);
+  });
+  it('leaves safe ids alone', () => {
+    const text = JSON.stringify({
+      version: 2,
+      categories: [{ id: 'cat-1', name: 'X', color: '#123456' }],
+      entries: [{ id: 'entry_1', title: 'T', date: '2026-01-01', categoryId: 'cat-1' }],
+    });
+    const r = parseJSONExport(text);
+    expect(r.categories[0].id).toBe('cat-1');
+    expect(r.entries[0].id).toBe('entry_1');
+    expect(r.entries[0].categoryId).toBe('cat-1');
   });
 });
 

@@ -1,6 +1,6 @@
 // @ts-check
 import { isValidISODate, fromParts, todayISO } from '../dates.js';
-import { buildEntry, buildCategory, nextPaletteColor, normalizeEntry, normalizeCategory, newId } from '../model.js';
+import { buildEntry, buildCategory, nextPaletteColor, normalizeEntry, normalizeCategory, newId, LIMITS } from '../model.js';
 
 /** @typedef {import('../model.js').Entry} Entry */
 /** @typedef {import('../model.js').Category} Category */
@@ -112,8 +112,19 @@ export function csvRowsToEntries(rows, mapping, { dayFirst = true, categories = 
   return { entries, newCategories, skipped };
 }
 
+const SAFE_ID_RE = /^[A-Za-z0-9_-]{1,128}$/;
+
+/** An id from an imported file, replaced with a fresh one when it isn't a safe Firestore document-id shape. @param {unknown} id */
+function safeId(id) {
+  const s = String(id ?? '');
+  return SAFE_ID_RE.test(s) ? s : newId();
+}
+
 /**
  * Parse a DateTracker JSON export (version 2). Throws with a user-facing message otherwise.
+ * Ids that aren't a safe document-id shape are replaced; a replaced category id
+ * is remapped on any entry that pointed at it. Text fields are clamped to the
+ * same limits compose enforces.
  * @param {string} text
  * @returns {{ entries: Entry[], categories: Category[] }}
  */
@@ -123,10 +134,28 @@ export function parseJSONExport(text) {
   if (!data || data.version !== 2 || !Array.isArray(data.entries) || !Array.isArray(data.categories)) {
     throw new Error('That file is not a DateTracker export.');
   }
-  return {
-    entries: data.entries.map(e => normalizeEntry(String(e?.id || newId()), e)),
-    categories: data.categories.map(c => normalizeCategory(String(c?.id || newId()), c)),
-  };
+  /** @type {Map<string, string>} old category id -> replacement id */
+  const categoryIdMap = new Map();
+  const categories = data.categories.map((c) => {
+    const rawId = String(c?.id ?? '');
+    const id = safeId(rawId);
+    if (id !== rawId) categoryIdMap.set(rawId, id);
+    const cat = normalizeCategory(id, c);
+    cat.name = cat.name.slice(0, LIMITS.categoryName);
+    return cat;
+  });
+  const entries = data.entries.map((e) => {
+    const id = safeId(e?.id);
+    const rawCategoryId = e && typeof e === 'object' ? e.categoryId : undefined;
+    const source = typeof rawCategoryId === 'string' && categoryIdMap.has(rawCategoryId)
+      ? { ...e, categoryId: categoryIdMap.get(rawCategoryId) }
+      : e;
+    const entry = normalizeEntry(id, source);
+    entry.title = entry.title.slice(0, LIMITS.title);
+    entry.notes = entry.notes.slice(0, LIMITS.notes);
+    return entry;
+  });
+  return { entries, categories };
 }
 
 /**

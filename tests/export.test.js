@@ -25,6 +25,16 @@ describe('buildCSVExport', () => {
   });
 });
 
+describe('buildCSVExport formula injection guard', () => {
+  it('prefixes a quote to title/category/notes cells that start with a formula trigger; dates are untouched', () => {
+    const risky = { ...e, title: '=HYPERLINK("http://evil")', notes: '+cmd|/c calc' };
+    const riskyCat = { ...c, name: '@SUM(1,1)' };
+    const csv = buildCSVExport([risky], new Map([['c1', riskyCat]]));
+    const lines = csv.slice(1).split('\r\n');
+    expect(lines[1]).toBe('2026-09-18,"\'=HYPERLINK(""http://evil"")","\'@SUM(1,1)",\'+cmd|/c calc,yes,Every year · 09:00');
+  });
+});
+
 describe('exportFilename', () => {
   it('uses the local date', () => {
     expect(exportFilename('json', new Date(2026, 8, 22, 23, 0))).toBe('DateTracker-2026-09-22.json');

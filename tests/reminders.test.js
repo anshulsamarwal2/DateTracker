@@ -77,6 +77,12 @@ describe('toICS', () => {
     expect(ics).toContain('BEGIN:VALARM');
     expect(ics.endsWith('END:VCALENDAR\r\n')).toBe(true);
   });
+  it('uses a BYMONTH/BYMONTHDAY=-1 RRULE for a Feb 29 anniversary, so it fires Feb 28/29 every year', () => {
+    const feb29 = { ...yearly, date: '2020-02-29' };
+    const ics = toICS(feb29, null, now);
+    expect(ics).toContain('RRULE:FREQ=YEARLY;BYMONTH=2;BYMONTHDAY=-1');
+    expect(ics).not.toMatch(/RRULE:FREQ=YEARLY\r\n/);
+  });
   it('emits a once VEVENT without RRULE and escapes text', () => {
     const e = { ...once, title: 'Semi; colon, comma', notes: '' };
     const ics = toICS(e, null, now);
