@@ -27,13 +27,13 @@ const REDIRECT_CODES = new Set([
 ]);
 const DISMISSED_CODES = new Set(['auth/popup-closed-by-user', 'auth/cancelled-popup-request']);
 
-function isStandalone() {
-  return matchMedia('(display-mode: standalone)').matches || /** @type {any} */ (navigator).standalone === true;
-}
-
-/** Sign in with Google: popup, or redirect when popups can't work. */
+/**
+ * Sign in with Google. Always tries a popup first — including in an installed
+ * (standalone) PWA, where a redirect through `authDomain` can silently fail in
+ * browsers that partition third-party storage. Falls back to a redirect only
+ * when the popup itself can't work.
+ */
 export async function signIn() {
-  if (isStandalone()) return signInWithRedirect(auth, provider);
   try {
     await signInWithPopup(auth, provider);
   } catch (err) {
@@ -44,9 +44,17 @@ export async function signIn() {
   }
 }
 
-/** Finish a redirect sign-in if one is pending. Never rejects. */
+/**
+ * Finish a redirect sign-in if one is pending. Never rejects.
+ * @returns {Promise<{ error: string } | null>} null on success or when no redirect was pending.
+ */
 export function completeRedirect() {
-  return getRedirectResult(auth).catch(() => null);
+  return getRedirectResult(auth)
+    .then(() => null)
+    .catch((err) => {
+      console.error(err);
+      return { error: "Sign-in didn't complete. Please try again." };
+    });
 }
 
 /** @param {(user: any) => void} cb */

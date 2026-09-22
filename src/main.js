@@ -69,11 +69,16 @@ function failBoot(err) {
   });
 }
 
+/** Fields that outlive a full state reset — they describe the device/app, not the account. */
+function keep() {
+  return { updateReady: store.get().updateReady, online: store.get().online };
+}
+
 /** @param {any} fbUser */
 async function startSession(fbUser) {
   stopSession();
   const user = toUser(fbUser);
-  store.set({ ...initialState(), status: 'loading', user });
+  store.set({ ...initialState(), ...keep(), status: 'loading', user });
 
   /** @type {(() => void)[]} */
   const unsubs = [];
@@ -127,12 +132,20 @@ startApp(/** @type {HTMLElement} */ (document.getElementById('app')), {
   onReload: () => applyUpdate(),
 });
 
-completeRedirect();
+completeRedirect().then((result) => {
+  if (result) store.set({ signInError: result.error });
+});
 watchAuth((u) => {
   if (u && currentUser && u.uid === currentUser.uid && store.get().status !== 'signedOut') return;
+  const hadUser = currentUser != null;
   currentUser = u;
   if (u) startSession(u);
-  else { stopSession(); store.set({ ...initialState(), status: 'signedOut' }); }
+  else {
+    stopSession();
+    // Preserve a redirect sign-in error across the reset — unless this is an
+    // explicit sign-out, which should clear any stale error from an earlier attempt.
+    store.set({ ...initialState(), ...keep(), status: 'signedOut', signInError: hadUser ? '' : store.get().signInError });
+  }
 });
 
 window.addEventListener('online', () => store.set({ online: true }));

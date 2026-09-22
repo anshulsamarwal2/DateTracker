@@ -48,6 +48,8 @@ npm test         # unit tests (Vitest)
 
 About the API key in `src/config.js`: a Firebase *web* API key is not a secret. It only identifies your project to Google. Access to data is controlled by the Firestore rules (only the signed-in owner can read or write their documents) and by the list of authorised domains for sign-in.
 
+Sign-in inside an installed app uses a popup; if a browser blocks popups it falls back to a redirect, which only works reliably when `authDomain` is on the same site as the app — to guarantee it, serve the app from Firebase Hosting or set `authDomain` to your own domain and proxy `/__/auth/*` ([redirect best practices](https://firebase.google.com/docs/auth/web/redirect-best-practices)).
+
 When you deploy a change, bump `VERSION` in `sw.js` so installed copies pick up the new files ("Update ready · Reload").
 
 ## How it's built

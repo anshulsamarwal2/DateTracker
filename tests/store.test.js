@@ -34,7 +34,7 @@ describe('createStore', () => {
 describe('app store', () => {
   it('starts loading with empty data', () => {
     const st = initialState();
-    expect(st).toMatchObject({ status: 'loading', user: null, entries: [], categories: [], meta: null, sync: 'clean', error: '', updateReady: false, tick: 0 });
+    expect(st).toMatchObject({ status: 'loading', user: null, entries: [], categories: [], meta: null, sync: 'clean', error: '', signInError: '', updateReady: false, tick: 0 });
     expect(st.ui).toEqual(INITIAL_UI);
   });
   it('setUI merges into ui only', () => {

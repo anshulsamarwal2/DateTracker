@@ -1,6 +1,7 @@
 import { html, raw, setHTML, delegate } from './dom.js';
 import { icon } from './icons.js';
 import { signIn } from '../firebase.js';
+import { store } from '../store.js';
 
 /** The app mark (same geometry as assets/icons/favicon.svg). */
 export function logoMark() {
@@ -11,7 +12,11 @@ export function logoMark() {
 export function mountLanding(root) {
   let error = '';
   let busy = false;
-  const render = () => setHTML(root, html`
+  let alive = true;
+  const render = () => {
+    if (!alive) return;
+    const shownError = error || store.get().signInError;
+    setHTML(root, html`
     <main class="landing">
       ${logoMark()}
       <h1 class="landing-title">DateTracker</h1>
@@ -24,24 +29,28 @@ export function mountLanding(root) {
       ${navigator.onLine
         ? html`<button type="button" class="btn btn-primary btn-block landing-cta" data-action="signin" ${busy ? 'disabled' : ''}>Continue with Google</button>`
         : html`<p class="landing-offline">${icon('cloud-off')}<span>You're offline — connect to sign in.</span></p>`}
-      ${error ? html`<p class="field-error landing-error" role="alert">${error}</p>` : ''}
+      ${shownError ? html`<p class="field-error landing-error" role="alert">${shownError}</p>` : ''}
       <p class="landing-foot">Private · Free · No ads</p>
     </main>`);
+  };
 
   const off = delegate(root, 'click', {
     signin: () => {
-      busy = true; error = ''; render();
+      busy = true; error = ''; store.set({ signInError: '' }); render();
       signIn()
         .catch((err) => { console.error(err); error = 'Sign-in failed. Please try again.'; })
-        .finally(() => { busy = false; if (root.isConnected) render(); });
+        .finally(() => { busy = false; render(); });
     },
   });
   window.addEventListener('online', render);
   window.addEventListener('offline', render);
+  const unsub = store.subscribe(render);
   render();
   return {
     unmount() {
+      alive = false;
       off();
+      unsub();
       window.removeEventListener('online', render);
       window.removeEventListener('offline', render);
     },

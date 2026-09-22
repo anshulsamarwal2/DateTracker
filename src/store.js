@@ -9,7 +9,7 @@
  * @typedef {{ uid: string, name: string, email: string, photoURL: string }} User
  * @typedef {{ categoryId: string, starredOnly: boolean, query: string, searching: boolean }} UI
  * @typedef {{ status: 'loading'|'signedOut'|'ready'|'error', user: User|null, entries: Entry[], categories: Category[],
- *             meta: Meta|null, sync: 'clean'|'pending'|'error', error: string, online: boolean,
+ *             meta: Meta|null, sync: 'clean'|'pending'|'error', error: string, signInError: string, online: boolean,
  *             updateReady: boolean, tick: number, ui: UI }} AppState
  */
 
@@ -51,6 +51,7 @@ export function initialState() {
     meta: null,
     sync: 'clean',
     error: '',
+    signInError: '',
     online: typeof navigator === 'undefined' || navigator.onLine !== false,
     updateReady: false,
     tick: 0,
