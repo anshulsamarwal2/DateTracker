@@ -1,0 +1,11 @@
+rules_version = '2';
+// DateTracker: each signed-in user can read and write only their own data.
+// v9 stores users/{uid}/entries/*, users/{uid}/categories/* and users/{uid}/meta/app.
+// Deploy from the Firebase console (Firestore → Rules) or with the Firebase CLI.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
