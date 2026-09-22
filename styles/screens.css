@@ -269,3 +269,7 @@
 .csv-preview table { width: 100%; border-collapse: collapse; font-size: var(--fs-2); }
 .csv-preview th { text-align: left; color: var(--text-3); font-weight: var(--fw-semibold); padding: var(--sp-1) var(--sp-2); border-bottom: 1px solid var(--hairline); }
 .csv-preview td { padding: var(--sp-2); border-bottom: 1px solid var(--hairline); max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---------- Settings: trash ---------- */
+.trash-intro { padding-top: var(--sp-2); padding-bottom: var(--sp-4); }
+.trash-actions { display: flex; justify-content: center; }

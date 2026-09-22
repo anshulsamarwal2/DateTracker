@@ -14,6 +14,7 @@ import { toast } from './toast.js';
 import { sectionScreen, lastBackupLabel } from './settings-shared.js';
 import { mount as mountCategories } from './settings-categories.js';
 import { mount as mountData } from './settings-data.js';
+import { mount as mountTrash } from './settings-trash.js';
 
 export const APP_VERSION = '9.0.0';
 
@@ -176,21 +177,18 @@ function mountAbout(root) {
 
 /* ---------- Router ---------- */
 
-/** Section name → mount. Tasks 25–27 add categories, data and trash. @type {Record<string, (root: HTMLElement) => { unmount(): void }>} */
+/** Section name → mount. @type {Record<string, (root: HTMLElement) => { unmount(): void }>} */
 const SECTIONS = {
   appearance: mountAppearance,
   categories: mountCategories,
   notifications: mountNotifications,
   data: mountData,
+  trash: mountTrash,
   about: mountAbout,
 };
 
 /** @param {HTMLElement} root @param {{ section?: string }} params */
 export function mount(root, { section = '' }) {
-  if (!section) return mountIndex(root);
-  const m = SECTIONS[section];
-  if (m) return m(root);
-  setHTML(root, sectionScreen('Settings', html`<div class="empty"><p>This section isn't available yet.</p></div>`));
-  const off = delegate(root, 'click', { back: () => back('#/settings') });
-  return { unmount: off };
+  const m = section ? SECTIONS[section] : undefined;
+  return m ? m(root) : mountIndex(root);
 }
