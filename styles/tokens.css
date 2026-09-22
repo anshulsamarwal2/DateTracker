@@ -1,0 +1,78 @@
+/* Design tokens. Dark is the default; [data-theme="light"] overrides.
+   --accent and --on-accent are set at runtime by src/theme.js. */
+:root {
+  color-scheme: dark;
+
+  --bg: #0F0E0D;
+  --surface-1: #1A1917;
+  --surface-2: #24221F;
+  --hairline: #2E2B28;
+  --text-1: #EDE8E2;
+  --text-2: #BDB5AC;
+  --text-3: #968D84;
+  --danger: #F2837A;
+  --warning: #E6B450;
+  --success: #6CC08B;
+  --accent: #C8956C;
+  --on-accent: #1A1410;
+  --accent-soft: color-mix(in srgb, var(--accent) 18%, transparent);
+  --scrim: rgb(0 0 0 / 0.55);
+  --shadow-sheet: 0 -8px 32px rgb(0 0 0 / 0.45);
+  --shadow-pop: 0 8px 24px rgb(0 0 0 / 0.4);
+  --card-border: transparent;
+
+  --font: 'Outfit', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fs-1: 12px;
+  --fs-2: 14px;
+  --fs-3: 16px;
+  --fs-4: 20px;
+  --fs-5: 28px;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --lh-body: 1.5;
+  --lh-head: 1.25;
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-12: 48px;
+
+  --r-input: 8px;
+  --r-card: 12px;
+  --r-sheet: 20px;
+  --r-full: 999px;
+
+  --tap: 44px;
+  --content-max: 680px;
+  --gutter: 16px;
+  --topbar-h: 56px;
+
+  --dur-sheet: 240ms;
+  --dur-push: 200ms;
+  --dur-toast: 200ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+
+  --bg: #FAF8F5;
+  --surface-1: #FFFFFF;
+  --surface-2: #F1ECE6;
+  --hairline: #E3DCD4;
+  --text-1: #1C1917;
+  --text-2: #4A433D;
+  --text-3: #6B635B;
+  --danger: #B3261E;
+  --warning: #8A5A00;
+  --success: #2E7D4F;
+  --scrim: rgb(28 25 23 / 0.4);
+  --shadow-sheet: 0 -8px 32px rgb(28 25 23 / 0.14);
+  --shadow-pop: 0 8px 24px rgb(28 25 23 / 0.12);
+  --card-border: var(--hairline);
+}
