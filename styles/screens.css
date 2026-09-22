@@ -171,3 +171,24 @@
 .jumper h3:first-child { margin-top: 0; }
 .jumper-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-2); }
 .jumper-grid .chip { justify-content: center; }
+
+/* ---------- Entry detail ---------- */
+.detail-body { padding-top: var(--sp-2); }
+.detail-date { font-size: var(--fs-2); color: var(--text-2); }
+.detail-title { margin: var(--sp-2) 0 var(--sp-4); font-size: var(--fs-5); overflow-wrap: anywhere; }
+.cat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--r-input);
+  background: color-mix(in srgb, var(--c) 18%, transparent);
+  font-size: var(--fs-2);
+  font-weight: var(--fw-medium);
+}
+.detail-notes { margin-top: var(--sp-6); white-space: pre-wrap; overflow-wrap: anywhere; }
+.detail-notes a { text-decoration: underline; text-underline-offset: 3px; }
+.detail-body .detail-reminder { display: grid; gap: var(--sp-3); justify-items: start; margin: var(--sp-6) 0 0; padding: var(--sp-4); }
+.reminder-line { display: flex; align-items: center; gap: var(--sp-3); color: var(--text-2); }
+.reminder-line .icon { color: var(--text-3); }
+.detail-actions { display: flex; align-items: center; gap: var(--sp-3); margin-top: var(--sp-8); }

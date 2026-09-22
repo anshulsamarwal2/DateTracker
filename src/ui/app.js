@@ -4,12 +4,14 @@ import { html, setHTML, delegate } from './dom.js';
 import { icon } from './icons.js';
 import { mountLanding, mountLoading, mountError } from './landing.js';
 import { mount as mountTimeline } from './timeline.js';
+import { mount as mountEntry } from './entry-detail.js';
 
 /** @typedef {(root: HTMLElement, params: { id?: string, section?: string }) => { unmount(): void }} MountFn */
 
-/** Route name → screen. Tasks 22, 23 and 24 add their screens here. @type {Record<string, MountFn>} */
+/** Route name → screen. Tasks 23 and 24 add their screens here. @type {Record<string, MountFn>} */
 const SCREENS = {
   timeline: mountTimeline,
+  entry: mountEntry,
 };
 
 /** @type {MountFn} */
