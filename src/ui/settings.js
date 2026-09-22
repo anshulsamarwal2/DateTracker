@@ -12,6 +12,7 @@ import { notificationStatusBlock } from './reminders-view.js';
 import { confirmSheet } from './sheet.js';
 import { toast } from './toast.js';
 import { sectionScreen, lastBackupLabel } from './settings-shared.js';
+import { mount as mountCategories } from './settings-categories.js';
 
 export const APP_VERSION = '9.0.0';
 
@@ -177,6 +178,7 @@ function mountAbout(root) {
 /** Section name → mount. Tasks 25–27 add categories, data and trash. @type {Record<string, (root: HTMLElement) => { unmount(): void }>} */
 const SECTIONS = {
   appearance: mountAppearance,
+  categories: mountCategories,
   notifications: mountNotifications,
   about: mountAbout,
 };

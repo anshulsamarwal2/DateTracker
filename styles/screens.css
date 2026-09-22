@@ -244,3 +244,16 @@
 .about .logo-mark { width: 48px; height: 48px; }
 .about-name { font-size: var(--fs-4); font-weight: var(--fw-semibold); margin-top: var(--sp-2); }
 .about a:not(.btn) { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- Settings: categories ---------- */
+.cat-row { gap: var(--sp-2); padding-right: var(--sp-2); }
+.cat-row .dot { width: 12px; height: 12px; margin-right: var(--sp-2); }
+.cat-open { display: flex; flex: 1; flex-direction: column; min-width: 0; min-height: var(--tap); justify-content: center; }
+.cat-open:hover .list-row-title { text-decoration: underline; }
+.icon-btn:disabled { opacity: 0.35; cursor: default; background: none; }
+.add-cat { display: grid; gap: var(--sp-2); }
+.swatches.small { gap: var(--sp-2); }
+.swatches.small .swatch { width: 36px; height: 36px; }
+.radio-list { display: grid; margin-top: var(--sp-3); }
+.radio-row { display: flex; align-items: center; gap: var(--sp-3); min-height: var(--tap); cursor: pointer; }
+.radio-row input { width: 20px; height: 20px; margin: 0; accent-color: var(--accent); }
