@@ -13,6 +13,7 @@ import { confirmSheet } from './sheet.js';
 import { toast } from './toast.js';
 import { sectionScreen, lastBackupLabel } from './settings-shared.js';
 import { mount as mountCategories } from './settings-categories.js';
+import { mount as mountData } from './settings-data.js';
 
 export const APP_VERSION = '9.0.0';
 
@@ -180,6 +181,7 @@ const SECTIONS = {
   appearance: mountAppearance,
   categories: mountCategories,
   notifications: mountNotifications,
+  data: mountData,
   about: mountAbout,
 };
 

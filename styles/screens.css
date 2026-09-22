@@ -257,3 +257,15 @@
 .radio-list { display: grid; margin-top: var(--sp-3); }
 .radio-row { display: flex; align-items: center; gap: var(--sp-3); min-height: var(--tap); cursor: pointer; }
 .radio-row input { width: 20px; height: 20px; margin: 0; accent-color: var(--accent); }
+
+/* ---------- Settings: data ---------- */
+.backup-line { padding-top: var(--sp-2); }
+.select { appearance: auto; }
+.csv-map { display: grid; gap: 0 var(--sp-4); grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.csv-map .field { margin-bottom: var(--sp-4); }
+.csv-map .field-hint { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.csv-import h3 { margin: var(--sp-2) 0; }
+.csv-preview { overflow-x: auto; margin-bottom: var(--sp-3); }
+.csv-preview table { width: 100%; border-collapse: collapse; font-size: var(--fs-2); }
+.csv-preview th { text-align: left; color: var(--text-3); font-weight: var(--fw-semibold); padding: var(--sp-1) var(--sp-2); border-bottom: 1px solid var(--hairline); }
+.csv-preview td { padding: var(--sp-2); border-bottom: 1px solid var(--hairline); max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
