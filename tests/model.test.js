@@ -34,6 +34,7 @@ describe('validateEntry', () => {
     expect(validateEntry({ ...good, reminder: { kind: 'yearly', time: '09:00' } })).toEqual({});
     expect(validateEntry({ ...good, reminder: { kind: 'yearly', time: '9am' } }).reminder).toBe('Pick a time for the reminder.');
     expect(validateEntry({ ...good, reminder: { kind: 'weekly', time: '09:00' } }).reminder).toBe('Unknown reminder type.');
+    expect(validateEntry({ ...good, reminder: { kind: 'once', at: '2026-13-40T99:99' } }).reminder).toBe('Pick a date and time for the reminder.');
   });
 });
 
@@ -46,6 +47,7 @@ describe('normalizeReminder', () => {
     expect(normalizeReminder({ kind: 'daily', time: '09:00' })).toBeNull();
     expect(normalizeReminder(null)).toBeNull();
     expect(normalizeReminder('once')).toBeNull();
+    expect(normalizeReminder({ kind: 'once', at: '2026-02-30T09:00' })).toBeNull();
   });
 });
 

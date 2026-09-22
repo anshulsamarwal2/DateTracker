@@ -1,5 +1,5 @@
 // @ts-check
-import { isValidISODate, todayISO } from './dates.js';
+import { isValidISODate, todayISO, parseDateTimeLocal } from './dates.js';
 
 /**
  * @typedef {{ kind: 'once', at: string } | { kind: 'yearly', time: string }} Reminder
@@ -48,7 +48,7 @@ export function validateEntry(input) {
   if (String(input?.notes ?? '').length > LIMITS.notes) errors.notes = `Notes are limited to ${LIMITS.notes} characters.`;
   const r = input?.reminder;
   if (r) {
-    if (r.kind === 'once') { if (!DT_LOCAL_RE.test(String(r.at ?? '').slice(0, 16))) errors.reminder = 'Pick a date and time for the reminder.'; }
+    if (r.kind === 'once') { const at = String(r.at ?? '').slice(0, 16); if (!DT_LOCAL_RE.test(at) || !parseDateTimeLocal(at)) errors.reminder = 'Pick a date and time for the reminder.'; }
     else if (r.kind === 'yearly') { if (!TIME_RE.test(String(r.time ?? ''))) errors.reminder = 'Pick a time for the reminder.'; }
     else errors.reminder = 'Unknown reminder type.';
   }
@@ -60,7 +60,7 @@ export function normalizeReminder(r) {
   if (!r || typeof r !== 'object') return null;
   if (r.kind === 'once') {
     const at = String(r.at ?? '').slice(0, 16);
-    return DT_LOCAL_RE.test(at) ? { kind: 'once', at } : null;
+    return DT_LOCAL_RE.test(at) && parseDateTimeLocal(at) ? { kind: 'once', at } : null;
   }
   if (r.kind === 'yearly') {
     const time = String(r.time ?? '');
