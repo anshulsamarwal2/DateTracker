@@ -14,6 +14,40 @@ history.scrollRestoration = 'manual';
 initTheme();
 startRouter();
 
+const hadController = 'serviceWorker' in navigator && Boolean(navigator.serviceWorker.controller);
+
+function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) return;
+  if (location.hostname === 'localhost' && !new URLSearchParams(location.search).has('sw')) return;
+  navigator.serviceWorker.register('./sw.js').then((reg) => {
+    const markReady = () => store.set({ updateReady: true });
+    if (reg.waiting && navigator.serviceWorker.controller) markReady();
+    reg.addEventListener('updatefound', () => {
+      const worker = reg.installing;
+      worker?.addEventListener('statechange', () => {
+        if (worker.state === 'installed' && navigator.serviceWorker.controller) markReady();
+      });
+    });
+    setInterval(() => { reg.update().catch(() => {}); }, 60 * 60 * 1000);
+  }).catch((err) => console.warn('Service worker registration failed', err));
+
+  let reloading = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController || reloading) return; // first install: nothing to reload
+    reloading = true;
+    location.reload();
+  });
+}
+
+function applyUpdate() {
+  navigator.serviceWorker?.getRegistration().then((reg) => {
+    if (reg?.waiting) reg.waiting.postMessage('SKIP_WAITING');
+    else location.reload();
+  });
+}
+
+registerServiceWorker();
+
 /** @type {() => void} */
 let stopSession = () => {};
 /** @type {any} */
@@ -90,7 +124,7 @@ async function startSession(fbUser) {
 
 startApp(/** @type {HTMLElement} */ (document.getElementById('app')), {
   onRetry: () => { if (currentUser) startSession(currentUser); },
-  onReload: () => location.reload(),
+  onReload: () => applyUpdate(),
 });
 
 completeRedirect();
