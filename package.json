@@ -1,0 +1,15 @@
+{
+  "name": "datetracker",
+  "version": "9.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A private journal of memorable events. Zero-build web app.",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "serve": "node scripts/serve.mjs 8080"
+  },
+  "devDependencies": {
+    "vitest": "^5.0.1"
+  }
+}
