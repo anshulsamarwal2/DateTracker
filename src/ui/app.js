@@ -6,14 +6,16 @@ import { mountLanding, mountLoading, mountError } from './landing.js';
 import { mount as mountTimeline } from './timeline.js';
 import { mount as mountEntry } from './entry-detail.js';
 import { mount as mountReminders } from './reminders-view.js';
+import { mount as mountSettings } from './settings.js';
 
 /** @typedef {(root: HTMLElement, params: { id?: string, section?: string }) => { unmount(): void }} MountFn */
 
-/** Route name → screen. Task 24 adds settings here. @type {Record<string, MountFn>} */
+/** Route name → screen. @type {Record<string, MountFn>} */
 const SCREENS = {
   timeline: mountTimeline,
   entry: mountEntry,
   reminders: mountReminders,
+  settings: mountSettings,
 };
 
 /** @type {MountFn} */
